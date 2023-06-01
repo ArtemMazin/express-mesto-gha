@@ -1,14 +1,12 @@
-// import { Router } from 'express';
+import { Router } from 'express';
+import { createUser, getUsers, getUserById } from '../controllers/users.js';
 
-// export default Router().get('/users/:id', (req, res) => {
-//   if (!users[req.params.id]) {
-//     res.send(`Такого пользователя не существует`);
+const router = Router();
 
-//     // не забудем выйти из функции
-//     return;
-//   }
+router.post('/users', createUser);
 
-//   const { name, age } = users[req.params.id];
+router.get('/users', getUsers);
 
-//   res.send(`Пользователь ${name}, ${age} лет`);
-// });
+router.get('/users/:userId', getUserById);
+
+export default router;
