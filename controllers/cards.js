@@ -22,4 +22,30 @@ const deleteCardById = (req, res) => {
     .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-export { createCard, getCards, deleteCardById };
+const likeCard = (req, res) => {
+  const owner = req.user._id;
+  console.log(req.params.cardId);
+
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: owner } }, // добавить _id в массив, если его там нет
+    { new: true }
+  )
+    .then((card) => res.send({ data: card }))
+    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
+const dislikeCard = (req, res) => {
+  const owner = req.user._id;
+  console.log(req.params.cardId);
+
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: owner } }, // добавить _id в массив, если его там нет
+    { new: true }
+  )
+    .then((card) => res.send({ data: card }))
+    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+};
+
+export { createCard, getCards, deleteCardById, likeCard, dislikeCard };
