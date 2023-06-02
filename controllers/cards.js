@@ -1,24 +1,33 @@
 import Card from '../models/card.js';
 
+const ERROR_CODE = 400;
+
 const createCard = (req, res) => {
   const { name, link } = req.body;
-
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка', err: `${err.message}` }));
+    .then((card) => res.status(201).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 const getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.status(200).send({ data: cards }))
     .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 const deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).send({ data: card }))
     .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
@@ -31,7 +40,7 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: owner } }, // добавить _id в массив, если его там нет
     { new: true }
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).send({ data: card }))
     .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
@@ -44,7 +53,7 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: owner } }, // добавить _id в массив, если его там нет
     { new: true }
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).send({ data: card }))
     .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 

@@ -1,22 +1,32 @@
 import User from '../models/user.js';
 
+const ERROR_CODE = 400;
+
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка', err: `${err.message}` }));
+    .then((card) => res.status(201).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
@@ -34,8 +44,16 @@ const updateProfile = (req, res) => {
       upsert: true, // если пользователь не найден, он будет создан
     }
   )
-    .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => res.status(201).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 const updateAvatar = (req, res) => {
@@ -52,8 +70,16 @@ const updateAvatar = (req, res) => {
       upsert: true, // если пользователь не найден, он будет создан
     }
   )
-    .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => res.status(201).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 export { createUser, getUsers, getUserById, updateProfile, updateAvatar };
