@@ -21,14 +21,30 @@ const createCard = (req, res) => {
 
 const getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.status(200).send({ data: cards }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 const deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 const likeCard = (req, res) => {
@@ -41,12 +57,23 @@ const likeCard = (req, res) => {
     { new: true }
   )
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else if (err.name === 'CastError') {
+        return res.status(404).send({
+          message: 'Такой карточки не существует',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 const dislikeCard = (req, res) => {
   const owner = req.user._id;
-  console.log(req.params.cardId);
 
   Card.findByIdAndUpdate(
     req.params.cardId,
@@ -54,7 +81,19 @@ const dislikeCard = (req, res) => {
     { new: true }
   )
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else if (err.name === 'CastError') {
+        return res.status(404).send({
+          message: 'Такой карточки не существует',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 export { createCard, getCards, deleteCardById, likeCard, dislikeCard };

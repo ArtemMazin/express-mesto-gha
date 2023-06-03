@@ -20,21 +20,40 @@ const createUser = (req, res) => {
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(ERROR_CODE).send({
+          message: 'Переданы некорректные данные',
+        });
+      } else if (err.name === 'CastError') {
+        return res.status(404).send({
+          message: 'Такого пользователя не существует',
+        });
+      } else {
+        return res.status(500).send({ message: 'Произошла ошибка сервера' });
+      }
+    });
 };
 
 const updateProfile = (req, res) => {
   const { name, about } = req.body;
   const owner = req.user._id;
 
-  // обновим имя найденного по _id пользователя
   User.findByIdAndUpdate(
     owner,
     { name, about },
@@ -44,7 +63,7 @@ const updateProfile = (req, res) => {
       upsert: true, // если пользователь не найден, он будет создан
     }
   )
-    .then((card) => res.status(201).send({ data: card }))
+    .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({
@@ -60,7 +79,6 @@ const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   const owner = req.user._id;
 
-  // обновим имя найденного по _id пользователя
   User.findByIdAndUpdate(
     owner,
     { avatar },
@@ -70,7 +88,7 @@ const updateAvatar = (req, res) => {
       upsert: true, // если пользователь не найден, он будет создан
     }
   )
-    .then((card) => res.status(201).send({ data: card }))
+    .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(ERROR_CODE).send({
