@@ -34,13 +34,15 @@ const getUsers = (req, res) => {
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(() => new Error('NotFound'))
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      console.log(err.name);
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные',
         });
-      } else if (err.name === 'CastError') {
+      } else if (err.message === 'NotFound') {
         return res.status(404).send({
           message: 'Такого пользователя не существует',
         });

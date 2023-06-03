@@ -35,11 +35,16 @@ const getCards = (req, res) => {
 
 const deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(() => new Error('NotFound'))
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные',
+        });
+      } else if (err.message === 'NotFound') {
+        return res.status(404).send({
+          message: 'Такой карточки не существует',
         });
       } else {
         return res.status(500).send({ message: 'Произошла ошибка сервера' });
@@ -56,13 +61,14 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: owner } }, // добавить _id в массив, если его там нет
     { new: true }
   )
+    .orFail(() => new Error('NotFound'))
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные',
         });
-      } else if (err.name === 'CastError') {
+      } else if (err.message === 'NotFound') {
         return res.status(404).send({
           message: 'Такой карточки не существует',
         });
@@ -80,13 +86,14 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: owner } }, // добавить _id в массив, если его там нет
     { new: true }
   )
+    .orFail(() => new Error('NotFound'))
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(ERROR_CODE).send({
           message: 'Переданы некорректные данные',
         });
-      } else if (err.name === 'CastError') {
+      } else if (err.message === 'NotFound') {
         return res.status(404).send({
           message: 'Такой карточки не существует',
         });
