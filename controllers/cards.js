@@ -1,6 +1,5 @@
 import Card from '../models/card.js';
-
-const ERROR_CODE = 400;
+import { handleCardErrors } from '../utils/utils.js';
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -8,99 +7,39 @@ const createCard = (req, res) => {
 
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .catch((err) => handleCardErrors(err, res));
 };
 
 const getCards = (req, res) => {
   Card.find({})
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .catch((err) => handleCardErrors(err, res));
 };
 
 const deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => new Error('NotFound'))
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else if (err.message === 'NotFound') {
-        return res.status(404).send({
-          message: 'Такой карточки не существует',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .catch((err) => handleCardErrors(err, res));
 };
 
 const likeCard = (req, res) => {
   const owner = req.user._id;
   console.log(req.params.cardId);
 
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: owner } }, // добавить _id в массив, если его там нет
-    { new: true }
-  )
+  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: owner } }, { new: true })
     .orFail(() => new Error('NotFound'))
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else if (err.message === 'NotFound') {
-        return res.status(404).send({
-          message: 'Такой карточки не существует',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .catch((err) => handleCardErrors(err, res));
 };
 
 const dislikeCard = (req, res) => {
   const owner = req.user._id;
 
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: owner } }, // добавить _id в массив, если его там нет
-    { new: true }
-  )
+  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: owner } }, { new: true })
     .orFail(() => new Error('NotFound'))
     .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else if (err.message === 'NotFound') {
-        return res.status(404).send({
-          message: 'Такой карточки не существует',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .catch((err) => handleCardErrors(err, res));
 };
 
 export { createCard, getCards, deleteCardById, likeCard, dislikeCard };

@@ -1,55 +1,25 @@
 import User from '../models/user.js';
-
-const ERROR_CODE = 400;
+import { handleUserErrors } from '../utils/utils.js';
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((card) => res.status(201).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .then((user) => res.status(201).send({ data: user }))
+    .catch((err) => handleUserErrors(err, res));
 };
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => handleUserErrors(err, res));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(() => new Error('NotFound'))
-    .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => {
-      console.log(err.name);
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else if (err.message === 'NotFound') {
-        return res.status(404).send({
-          message: 'Такого пользователя не существует',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => handleUserErrors(err, res));
 };
 
 const updateProfile = (req, res) => {
@@ -65,16 +35,8 @@ const updateProfile = (req, res) => {
       upsert: true, // если пользователь не найден, он будет создан
     }
   )
-    .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => handleUserErrors(err, res));
 };
 
 const updateAvatar = (req, res) => {
@@ -90,16 +52,8 @@ const updateAvatar = (req, res) => {
       upsert: true, // если пользователь не найден, он будет создан
     }
   )
-    .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(ERROR_CODE).send({
-          message: 'Переданы некорректные данные',
-        });
-      } else {
-        return res.status(500).send({ message: 'Произошла ошибка сервера' });
-      }
-    });
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => handleUserErrors(err, res));
 };
 
 export { createUser, getUsers, getUserById, updateProfile, updateAvatar };
