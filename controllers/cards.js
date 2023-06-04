@@ -1,5 +1,5 @@
-import Card from '../models/card.js';
-import { handleCardErrors } from '../utils/utils.js';
+import Card from '../models/card';
+import { handleCardErrors } from '../utils/utils';
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
@@ -25,7 +25,6 @@ const deleteCardById = (req, res) => {
 
 const likeCard = (req, res) => {
   const owner = req.user._id;
-  console.log(req.params.cardId);
 
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: owner } }, { new: true })
     .orFail(() => new Error('NotFound'))
@@ -42,4 +41,6 @@ const dislikeCard = (req, res) => {
     .catch((err) => handleCardErrors(err, res));
 };
 
-export { createCard, getCards, deleteCardById, likeCard, dislikeCard };
+export {
+  createCard, getCards, deleteCardById, likeCard, dislikeCard,
+};

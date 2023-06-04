@@ -1,5 +1,5 @@
-import User from '../models/user.js';
-import { handleUserErrors } from '../utils/utils.js';
+import User from '../models/user';
+import { handleUserErrors } from '../utils/utils';
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
@@ -32,8 +32,7 @@ const updateProfile = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: true, // если пользователь не найден, он будет создан
-    }
+    },
   )
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => handleUserErrors(err, res));
@@ -49,11 +48,12 @@ const updateAvatar = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-      upsert: true, // если пользователь не найден, он будет создан
-    }
+    },
   )
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => handleUserErrors(err, res));
 };
 
-export { createUser, getUsers, getUserById, updateProfile, updateAvatar };
+export {
+  createUser, getUsers, getUserById, updateProfile, updateAvatar,
+};

@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import router from './routes/index.js';
+import router from './routes/index';
 
 const { PORT = 3000 } = process.env;
 const app = express();
