@@ -1,12 +1,12 @@
 {
   "name": "mesto-back",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend of the mesto project",
   "type": "module",
   "main": "index.js",
   "scripts": {
     "lint": "npx eslint .",
-    "start": "node app.js",
+    "start": "node --experimental-specifier-resolution=node app.js",
     "dev": "nodemon --experimental-specifier-resolution=node app.js"
   },
   "keywords": [],

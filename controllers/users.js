@@ -1,25 +1,25 @@
 import User from '../models/user';
-import { handleUserErrors } from '../utils/utils';
+import handleErrors from '../utils/utils';
 
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
     .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => handleUserErrors(err, res));
+    .catch((err) => handleErrors(err, res));
 };
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => handleUserErrors(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((err) => handleErrors(err, res));
 };
 
 const getUserById = (req, res) => {
   User.findById(req.params.userId)
     .orFail(() => new Error('NotFound'))
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => handleUserErrors(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((err) => handleErrors(err, res));
 };
 
 const updateProfile = (req, res) => {
@@ -34,8 +34,8 @@ const updateProfile = (req, res) => {
       runValidators: true, // данные будут валидированы перед изменением
     },
   )
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => handleUserErrors(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((err) => handleErrors(err, res));
 };
 
 const updateAvatar = (req, res) => {
@@ -50,8 +50,8 @@ const updateAvatar = (req, res) => {
       runValidators: true, // данные будут валидированы перед изменением
     },
   )
-    .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => handleUserErrors(err, res));
+    .then((user) => res.send({ data: user }))
+    .catch((err) => handleErrors(err, res));
 };
 
 export {
