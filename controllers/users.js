@@ -1,10 +1,13 @@
+import bcrypt from 'bcryptjs';
 import User from '../models/user';
 import handleErrors from '../utils/utils';
 
 const createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const { name, about, avatar, email, password } = req.body;
 
-  User.create({ name, about, avatar })
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => User.create({ name, about, avatar, email, password: hash }))
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => handleErrors(err, res));
 };
@@ -32,7 +35,7 @@ const updateProfile = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-    },
+    }
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => handleErrors(err, res));
@@ -48,12 +51,10 @@ const updateAvatar = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-    },
+    }
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => handleErrors(err, res));
 };
 
-export {
-  createUser, getUsers, getUserById, updateProfile, updateAvatar,
-};
+export { createUser, getUsers, getUserById, updateProfile, updateAvatar };
