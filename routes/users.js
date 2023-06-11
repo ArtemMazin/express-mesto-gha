@@ -1,11 +1,14 @@
 import { Router } from 'express';
-import {
-  createUser, getUsers, getUserById, updateProfile, updateAvatar,
-} from '../controllers/users';
+import { createUser, getUsers, getUserById, updateProfile, updateAvatar, login } from '../controllers/users';
+import auth from '../middlewares/auth';
 
 const router = Router();
 
-router.post('/users', createUser);
+router.post('/signin', login);
+
+router.post('/signup', createUser);
+
+router.use(auth);
 
 router.get('/users', getUsers);
 

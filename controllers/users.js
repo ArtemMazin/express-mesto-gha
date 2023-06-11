@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import handleErrors from '../utils/utils';
-import jwt from 'jsonwebtoken';
 
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
@@ -66,15 +66,14 @@ const login = (req, res) => {
       // аутентификация успешна! пользователь в переменной user
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
 
-      res.cookie('jwt', token, {
-        // token - наш JWT токен, который мы отправляем
-        maxAge: 3600000,
-        httpOnly: true,
-        sameSite: true,
-      });
-
-      // вернём токен
-      res.send({ token });
+      res
+        .cookie('jwt', token, {
+          // token - наш JWT токен, который мы отправляем
+          maxAge: 3600000,
+          httpOnly: true,
+          sameSite: true,
+        })
+        .end();
     })
     .catch((err) => {
       // ошибка аутентификации
