@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import handleErrors from '../utils/utils';
 
-const createUser = (req, res) => {
+const register = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
 
   bcrypt
@@ -90,4 +90,4 @@ const getUser = (req, res) => {
     .catch((err) => handleErrors(err, res));
 };
 
-export { createUser, getUsers, getUserById, updateProfile, updateAvatar, login, getUser };
+export { register, getUsers, getUserById, updateProfile, updateAvatar, login, getUser };
