@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createUser, getUsers, getUserById, updateProfile, updateAvatar, login } from '../controllers/users';
+import { createUser, getUsers, getUserById, updateProfile, updateAvatar, login, getUser } from '../controllers/users';
 import auth from '../middlewares/auth';
 
 const router = Router();
@@ -11,6 +11,8 @@ router.post('/signup', createUser);
 router.use(auth);
 
 router.get('/users', getUsers);
+
+router.get('/users/me', getUser);
 
 router.get('/users/:userId', getUserById);
 

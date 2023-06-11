@@ -1,13 +1,12 @@
 import jwt from 'jsonwebtoken';
 
-export default (req, res, next) => {
-  const { authorization } = req.headers;
+const auth = (req, res, next) => {
+  const token = req.cookies.jwt;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  if (!token) {
     return res.status(401).send({ message: 'Необходима авторизация' });
   }
 
-  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {
@@ -20,3 +19,5 @@ export default (req, res, next) => {
 
   next(); // пропускаем запрос дальше
 };
+
+export default auth;

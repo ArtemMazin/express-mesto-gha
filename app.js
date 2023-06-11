@@ -1,5 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import router from './routes/index';
@@ -19,6 +20,7 @@ app.use(limiter);
 // helmet помогает защитить приложения Express, устанавливая заголовки ответа HTTP
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use((req, res, next) => {
   req.user = {

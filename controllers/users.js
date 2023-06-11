@@ -81,4 +81,13 @@ const login = (req, res) => {
     });
 };
 
-export { createUser, getUsers, getUserById, updateProfile, updateAvatar, login };
+const getUser = (req, res) => {
+  const owner = req.user._id;
+
+  User.findById(owner)
+    .orFail(() => new Error('NotFound'))
+    .then((user) => res.send({ data: user }))
+    .catch((err) => handleErrors(err, res));
+};
+
+export { createUser, getUsers, getUserById, updateProfile, updateAvatar, login, getUser };
