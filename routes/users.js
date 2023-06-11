@@ -1,5 +1,7 @@
 import { Router } from 'express';
-import { getUsers, getUserById, updateProfile, updateAvatar, getUser } from '../controllers/users';
+import {
+  getUsers, getUserById, updateProfile, updateAvatar, getUser,
+} from '../controllers/users';
 
 const router = Router();
 

@@ -4,11 +4,15 @@ import User from '../models/user';
 import handleErrors from '../utils/utils';
 
 const register = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
   bcrypt
     .hash(password, 10)
-    .then((hash) => User.create({ name, about, avatar, email, password: hash }))
+    .then((hash) => User.create({
+      name, about, avatar, email, password: hash,
+    }))
     .then((user) => res.status(201).send({ data: user }))
     .catch((err) => handleErrors(err, res));
 };
@@ -36,7 +40,7 @@ const updateProfile = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => handleErrors(err, res));
@@ -52,7 +56,7 @@ const updateAvatar = (req, res) => {
     {
       new: true, // обработчик then получит на вход обновлённую запись
       runValidators: true, // данные будут валидированы перед изменением
-    }
+    },
   )
     .then((user) => res.send({ data: user }))
     .catch((err) => handleErrors(err, res));
@@ -69,7 +73,7 @@ const login = (req, res) => {
       res
         .cookie('jwt', token, {
           // token - наш JWT токен, который мы отправляем
-          maxAge: 3600000,
+          maxAge: 3600000 * 24 * 7,
           httpOnly: true,
           sameSite: true,
         })
@@ -90,4 +94,6 @@ const getUser = (req, res) => {
     .catch((err) => handleErrors(err, res));
 };
 
-export { register, getUsers, getUserById, updateProfile, updateAvatar, login, getUser };
+export {
+  register, getUsers, getUserById, updateProfile, updateAvatar, login, getUser,
+};

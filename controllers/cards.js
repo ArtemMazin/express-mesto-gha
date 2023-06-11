@@ -17,6 +17,11 @@ const getCards = (req, res) => {
 };
 
 const deleteCardById = (req, res) => {
+  if (req.params.cardId !== req.user._id) {
+    return Promise.reject(new Error()).catch((err) => res.status(403).send({
+      message: 'Недостаточно прав для удаления',
+    }));
+  }
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => new Error('NotFound'))
     .then((card) => res.send({ data: card }))
