@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/user';
 import handleErrors from '../utils/utils';
+import jwt from 'jsonwebtoken';
 
 const createUser = (req, res) => {
   const { name, about, avatar, email, password } = req.body;
@@ -57,4 +58,28 @@ const updateAvatar = (req, res) => {
     .catch((err) => handleErrors(err, res));
 };
 
-export { createUser, getUsers, getUserById, updateProfile, updateAvatar };
+const login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // аутентификация успешна! пользователь в переменной user
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+
+      res.cookie('jwt', token, {
+        // token - наш JWT токен, который мы отправляем
+        maxAge: 3600000,
+        httpOnly: true,
+        sameSite: true,
+      });
+
+      // вернём токен
+      res.send({ token });
+    })
+    .catch((err) => {
+      // ошибка аутентификации
+      res.status(401).send({ message: err.message });
+    });
+};
+
+export { createUser, getUsers, getUserById, updateProfile, updateAvatar, login };
