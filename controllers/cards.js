@@ -1,22 +1,24 @@
 import Card from '../models/card';
-import handleErrors from '../utils/utils';
+import handleErrors from '../errors/handleErrors';
 
-const createCard = (req, res) => {
+const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
 
   Card.create({ name, link, owner })
     .then((card) => res.status(201).send({ data: card }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const getCards = (req, res) => {
+const getCards = (req, res, next) => {
   Card.find({})
     .then((card) => res.send({ data: card }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const deleteCardById = (req, res) => {
+const deleteCardById = (req, res, next) => {
   if (req.params.cardId !== req.user._id) {
     return Promise.reject(new Error()).catch((err) => res.status(403).send({
       message: 'Недостаточно прав для удаления',
@@ -25,25 +27,28 @@ const deleteCardById = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => new Error('NotFound'))
     .then((card) => res.send({ data: card }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const likeCard = (req, res) => {
+const likeCard = (req, res, next) => {
   const owner = req.user._id;
 
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: owner } }, { new: true })
     .orFail(() => new Error('NotFound'))
     .then((card) => res.send({ data: card }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const dislikeCard = (req, res) => {
+const dislikeCard = (req, res, next) => {
   const owner = req.user._id;
 
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: owner } }, { new: true })
     .orFail(() => new Error('NotFound'))
     .then((card) => res.send({ data: card }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
 export {

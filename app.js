@@ -22,17 +22,14 @@ app.use(helmet());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '647884f2468bb0be2b612ae9',
-//   };
-
-//   next();
-// });
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(router);
+
+app.use((err, req, res, next) => {
+  res.status(err.statusCode).send({ message: err.message });
+});
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

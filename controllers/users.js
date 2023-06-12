@@ -1,9 +1,9 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
-import handleErrors from '../utils/utils';
+import handleErrors from '../errors/handleErrors';
 
-const register = (req, res) => {
+const register = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -11,26 +11,33 @@ const register = (req, res) => {
   bcrypt
     .hash(password, 10)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
     }))
     .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const getUsers = (req, res) => {
+const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const getUserById = (req, res) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(() => new Error('NotFound'))
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
   const owner = req.user._id;
 
@@ -43,10 +50,11 @@ const updateProfile = (req, res) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   const owner = req.user._id;
 
@@ -59,10 +67,11 @@ const updateAvatar = (req, res) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -85,15 +94,16 @@ const login = (req, res) => {
     });
 };
 
-const getUser = (req, res) => {
+const getProfile = (req, res, next) => {
   const owner = req.user._id;
 
   User.findById(owner)
     .orFail(() => new Error('NotFound'))
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res));
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
 export {
-  register, getUsers, getUserById, updateProfile, updateAvatar, login, getUser,
+  register, getUsers, getUserById, updateProfile, updateAvatar, login, getProfile,
 };

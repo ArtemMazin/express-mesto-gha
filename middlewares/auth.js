@@ -1,18 +1,24 @@
 import jwt from 'jsonwebtoken';
 
 const checkAuth = (req, res, next) => {
-  const token = req.cookies.jwt;
+  let token;
 
-  if (!token) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+  try {
+    token = req.cookies.jwt;
+  } catch (e) {
+    const err = new Error('Необходима авторизация');
+    err.statusCode = 401;
+    next(err);
   }
 
   let payload;
 
   try {
     payload = jwt.verify(token, 'some-secret-key');
-  } catch (err) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+  } catch (e) {
+    const err = new Error('Необходима авторизация');
+    err.statusCode = 401;
+    next(err);
   }
 
   req.user = payload; // записываем пейлоуд в объект запроса
