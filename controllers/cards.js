@@ -19,14 +19,17 @@ const getCards = (req, res, next) => {
 };
 
 const deleteCardById = (req, res, next) => {
-  if (req.params.cardId !== req.user._id) {
-    return Promise.reject(new Error()).catch((err) => res.status(403).send({
-      message: 'Недостаточно прав для удаления',
-    }));
-  }
   Card.findByIdAndRemove(req.params.cardId)
     .orFail(() => new Error('NotFound'))
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if (card.owner.toString() === req.user._id) {
+        res.send({ data: card });
+      } else {
+        Promise.reject(new Error()).catch((err) => res.status(403).send({
+          message: 'Недостаточно прав для удаления',
+        }));
+      }
+    })
     .catch((err) => handleErrors(err, res))
     .catch(next);
 };
