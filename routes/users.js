@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import {
+  celebrate, Joi, errors, Segments,
+} from 'celebrate';
+import {
   getUsers, getUserById, updateProfile, updateAvatar, getProfile,
 } from '../controllers/users';
 
@@ -11,7 +14,12 @@ router.get('/users/me', getProfile);
 
 router.get('/users/:userId', getUserById);
 
-router.patch('/users/me', updateProfile);
+router.patch('/users/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+  }),
+}), updateProfile);
 
 router.patch('/users/me/avatar', updateAvatar);
 

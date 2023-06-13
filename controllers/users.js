@@ -17,7 +17,44 @@ const register = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => res.status(201).send({
+      data: {
+        name: user.name, about: user.about, avatar: user.avatar, email: user.email,
+      },
+    }))
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
+};
+
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      // аутентификация успешна! пользователь в переменной user
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+
+      res
+        .cookie('jwt', token, {
+          // token - наш JWT токен, который мы отправляем
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+          sameSite: true,
+        })
+        .send({ token });
+    })
+    .catch((err) => {
+      // ошибка аутентификации
+      res.status(401).send({ message: err.message });
+    });
+};
+
+const getProfile = (req, res, next) => {
+  const owner = req.user._id;
+
+  User.findById(owner)
+    .orFail(() => new Error('NotFound'))
+    .then((user) => res.send({ data: user }))
     .catch((err) => handleErrors(err, res))
     .catch(next);
 };
@@ -66,39 +103,6 @@ const updateAvatar = (req, res, next) => {
       runValidators: true, // данные будут валидированы перед изменением
     },
   )
-    .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res))
-    .catch(next);
-};
-
-const login = (req, res, next) => {
-  const { email, password } = req.body;
-
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      // аутентификация успешна! пользователь в переменной user
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
-
-      res
-        .cookie('jwt', token, {
-          // token - наш JWT токен, который мы отправляем
-          maxAge: 3600000 * 24 * 7,
-          httpOnly: true,
-          sameSite: true,
-        })
-        .end();
-    })
-    .catch((err) => {
-      // ошибка аутентификации
-      res.status(401).send({ message: err.message });
-    });
-};
-
-const getProfile = (req, res, next) => {
-  const owner = req.user._id;
-
-  User.findById(owner)
-    .orFail(() => new Error('NotFound'))
     .then((user) => res.send({ data: user }))
     .catch((err) => handleErrors(err, res))
     .catch(next);

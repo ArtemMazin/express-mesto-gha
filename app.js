@@ -2,6 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
+import {
+  celebrate, Joi, errors, Segments,
+} from 'celebrate';
 import helmet from 'helmet';
 import router from './routes/index';
 
@@ -26,6 +29,8 @@ app.use(express.urlencoded({ extended: true }));
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 
 app.use(router);
+
+app.use(errors());
 
 app.use((err, req, res, next) => {
   res.status(err.statusCode).send({ message: err.message });

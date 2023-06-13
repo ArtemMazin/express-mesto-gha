@@ -1,5 +1,8 @@
 import { Router } from 'express';
 import {
+  celebrate, Joi, errors, Segments,
+} from 'celebrate';
+import {
   createCard, getCards, deleteCardById, likeCard, dislikeCard,
 } from '../controllers/cards';
 
