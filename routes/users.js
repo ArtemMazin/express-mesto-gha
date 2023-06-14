@@ -21,6 +21,10 @@ router.patch('/users/me', celebrate({
   }),
 }), updateProfile);
 
-router.patch('/users/me/avatar', updateAvatar);
+router.patch('/users/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string(),
+  }),
+}), updateAvatar);
 
 export default router;
