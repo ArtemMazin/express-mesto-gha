@@ -22,7 +22,7 @@ router.post('/signup', celebrate({
     about: Joi.string().min(2).max(30),
     email: Joi.string().required(),
     password: Joi.string().required(),
-  }),
+  }).unknown(true),
 }), register);
 
 router.use(checkAuth);
