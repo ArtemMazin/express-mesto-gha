@@ -1,18 +1,16 @@
 import { Router } from 'express';
-import {
-  celebrate, Joi, errors, Segments,
-} from 'celebrate';
+import { celebrate, Joi } from 'celebrate';
 import {
   createCard, getCards, deleteCardById, likeCard, dislikeCard,
 } from '../controllers/cards';
+import { regExpUrl } from '../utils/utils';
 
 const router = Router();
 
 router.post('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    // eslint-disable-next-line no-useless-escape
-    link: Joi.string().required().pattern(/https?:\/\/(www\.)?[-\w@:%\.\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-\w()@:%\.\+~#=//?&]*)/i),
+    link: Joi.string().required().pattern(regExpUrl),
   }).unknown(true),
 }), createCard);
 

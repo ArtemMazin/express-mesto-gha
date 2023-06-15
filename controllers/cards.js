@@ -25,7 +25,7 @@ const deleteCardById = (req, res, next) => {
       if (card.owner.toString() === req.user._id) {
         res.send({ data: card });
       } else {
-        Promise.reject(new Error()).catch((err) => res.status(403).send({
+        Promise.reject(new Error()).catch(() => res.status(403).send({
           message: 'Недостаточно прав для удаления',
         }));
       }

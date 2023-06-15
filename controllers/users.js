@@ -43,10 +43,8 @@ const login = (req, res, next) => {
         })
         .send({ token });
     })
-    .catch((err) => {
-      // ошибка аутентификации
-      res.status(401).send({ message: err.message });
-    });
+    .catch((err) => handleErrors(err, res))
+    .catch(next);
 };
 
 const getProfile = (req, res, next) => {

@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import {
-  celebrate, Joi, errors, Segments,
-} from 'celebrate';
+import { celebrate, Joi } from 'celebrate';
+import { regExpUrl } from '../utils/utils';
 import {
   getUsers, getUserById, updateProfile, updateAvatar, getProfile,
 } from '../controllers/users';
@@ -27,8 +26,7 @@ router.patch('/users/me', celebrate({
 
 router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
-    // eslint-disable-next-line no-useless-escape
-    avatar: Joi.string().pattern(/https?:\/\/(www\.)?[-\w@:%\.\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-\w()@:%\.\+~#=//?&]*)/i),
+    avatar: Joi.string().pattern(regExpUrl),
   }),
 }), updateAvatar);
 

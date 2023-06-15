@@ -2,9 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
-import {
-  celebrate, Joi, errors, Segments,
-} from 'celebrate';
+import { errors } from 'celebrate';
 import helmet from 'helmet';
 import router from './routes/index';
 
@@ -32,7 +30,7 @@ app.use(router);
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   res.status(err.statusCode).send({ message: err.message });
 });
 
