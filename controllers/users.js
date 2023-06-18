@@ -16,12 +16,10 @@ const register = (req, res, next) => {
       avatar,
       email,
       password: hash,
-    }))
-    .then((user) => res.status(201).send({
-      data: {
-        name: user.name, about: user.about, avatar: user.avatar, email: user.email,
-      },
-    }))
+    }).then((user) => res.status(201)
+      .send({ data: user.toJSON() })
+      .catch((err) => handleErrors(err, res))
+      .catch(next)))
     .catch((err) => handleErrors(err, res))
     .catch(next);
 };
@@ -41,9 +39,9 @@ const login = (req, res, next) => {
           httpOnly: true,
           sameSite: true,
         })
-        .send({ token });
+        .send({ data: user.toJSON() });
     })
-    .catch((err) => handleErrors(err, res))
+    // .catch((err) => handleErrors(err, res))
     .catch(next);
 };
 

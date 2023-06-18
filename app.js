@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import { errors } from 'celebrate';
 import helmet from 'helmet';
 import router from './routes/index';
+import handleErrors from './errors/handleErrors';
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -30,10 +31,7 @@ app.use(router);
 
 app.use(errors());
 
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  res.status(err.statusCode).send({ message: err.message });
-});
+app.use(handleErrors);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
