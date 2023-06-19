@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import isEmail from 'validator/lib/isEmail';
 import isURL from 'validator/lib/isURL';
-import IncorrectEmailOrPassword from '../errors/IncorrectEmailOrPassword';
+import UnauthorizedError from '../errors/UnauthorizedError';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -47,12 +47,12 @@ userSchema.statics.findUserByCredentials = function (email, password) {
     .select('+password')
     .then((user) => {
       if (!user) {
-        throw new IncorrectEmailOrPassword('Неправильные почта или пароль');
+        throw new UnauthorizedError('Неправильные почта или пароль');
       }
 
       return bcrypt.compare(password, user.password).then((matched) => {
         if (!matched) {
-          throw new IncorrectEmailOrPassword('Неправильные почта или пароль');
+          throw new UnauthorizedError('Неправильные почта или пароль');
         }
 
         return user;

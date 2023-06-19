@@ -1,29 +1,16 @@
 import jwt from 'jsonwebtoken';
+import UnauthorizedError from '../errors/UnauthorizedError';
 
 const checkAuth = (req, res, next) => {
-  let token;
-
-  try {
-    token = req.cookies.jwt;
-  } catch (e) {
-    const err = new Error('Необходима авторизация');
-    err.statusCode = 401;
-    next(err);
+  if (req.cookies.jwt) {
+    const token = req.cookies.jwt;
+    const payload = jwt.verify(token, 'some-secret-key');
+    req.user = payload;
+  } else {
+    next(new UnauthorizedError('Необходима авторизация'));
   }
 
-  let payload;
-
-  try {
-    payload = jwt.verify(token, 'some-secret-key');
-  } catch (e) {
-    const err = new Error('Необходима авторизация');
-    err.statusCode = 401;
-    next(err);
-  }
-
-  req.user = payload; // записываем пейлоуд в объект запроса
-
-  next(); // пропускаем запрос дальше
+  next();
 };
 
 export default checkAuth;

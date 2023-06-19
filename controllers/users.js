@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import NotFoundError from '../errors/NotFoundError';
+import EmailIsExist from '../errors/EmailIsExist';
 
 const register = (req, res, next) => {
   const {
@@ -19,7 +20,12 @@ const register = (req, res, next) => {
     }).then((user) => res.status(201)
       .send({ data: user.toJSON() })
       .catch(next)))
-    .catch(next);
+    .catch((err) => {
+      if (err.code === 11000) {
+        next(new EmailIsExist('Пользователь с таким email уже существует'));
+      }
+      next(err);
+    });
 };
 
 const login = (req, res, next) => {
@@ -27,12 +33,10 @@ const login = (req, res, next) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      // аутентификация успешна! пользователь в переменной user
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
 
       res
         .cookie('jwt', token, {
-          // token - наш JWT токен, который мы отправляем
           maxAge: 3600000 * 24 * 7,
           httpOnly: true,
           sameSite: true,
