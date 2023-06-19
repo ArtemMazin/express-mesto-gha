@@ -5,6 +5,7 @@ import userRoutes from './users';
 import cardRoutes from './cards';
 import { register, login } from '../controllers/users';
 import { regExpEmail, regExpUrl } from '../utils/utils';
+import NotFoundError from '../errors/NotFoundError';
 
 const router = Router();
 
@@ -30,8 +31,6 @@ router.use(checkAuth);
 router.use(userRoutes);
 router.use(cardRoutes);
 
-router.use('*', (req, res) => res.status(404).send({
-  message: 'Указан некорректный маршрут',
-}));
+router.use('*', (req, res, next) => next(new NotFoundError('Указан некорректный маршрут')));
 
 export default router;

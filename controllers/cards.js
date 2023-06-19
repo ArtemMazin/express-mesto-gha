@@ -19,14 +19,14 @@ const getCards = (req, res, next) => {
 
 const deleteCardById = (req, res, next) => {
   Card.findById(req.params.cardId)
-    .orFail(() => new NotFoundError())
+    .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => {
       if (card.owner.toString() === req.user._id) {
         Card.deleteOne(card)
           .then(() => res.send({ data: card }))
           .catch(next);
       } else {
-        throw new NotEnoughRights();
+        throw new NotEnoughRights('Недостаточно прав для удаления');
       }
     })
     .catch(next);
@@ -36,7 +36,7 @@ const likeCard = (req, res, next) => {
   const owner = req.user._id;
 
   Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: owner } }, { new: true })
-    .orFail(() => new NotFoundError())
+    .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => res.send({ data: card }))
     .catch(next);
 };
@@ -45,7 +45,7 @@ const dislikeCard = (req, res, next) => {
   const owner = req.user._id;
 
   Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: owner } }, { new: true })
-    .orFail(() => new NotFoundError())
+    .orFail(() => new NotFoundError('Карточка не найдена'))
     .then((card) => res.send({ data: card }))
     .catch(next);
 };

@@ -46,7 +46,7 @@ const getProfile = (req, res, next) => {
   const owner = req.user._id;
 
   User.findById(owner)
-    .orFail(() => new NotFoundError())
+    .orFail(() => new NotFoundError('Пользователь не найден'))
     .then((user) => res.send({ data: user }))
     .catch(next);
 };
@@ -59,7 +59,7 @@ const getUsers = (req, res, next) => {
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail(() => new NotFoundError())
+    .orFail(() => new NotFoundError('Пользователь не найден'))
     .then((user) => res.send({ data: user }))
     .catch(next);
 };
