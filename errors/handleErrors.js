@@ -2,23 +2,24 @@ import NotFoundError from './NotFoundError';
 import IncorrectDataError from './IncorrectDataError';
 import ServerError from './ServerError';
 import EmailIsExist from './EmailIsExist';
-import IncorrectData from './IncorrectEmailOrPassword';
+import IncorrectEmailOrPassword from './IncorrectEmailOrPassword';
+import NotEnoughRights from './NotEnoughRights';
 
 const handleErrors = (err, req, res, next) => {
   let error;
-  const { statusCode = 500, message } = err;
 
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  if (err.statusCode === 400) {
+  if (err.statusCode === 500) {
+    error = new ServerError('На сервере произошла ошибка');
+  } else if (err.statusCode === 400) {
     error = new IncorrectDataError('Переданы некорректные данные');
-    console.log(error);
+  } else if (err.statusCode === 401) {
+    error = new IncorrectEmailOrPassword('Неправильные почта или пароль');
+  } else if (err.statusCode === 409) {
+    error = new EmailIsExist('Пользователь с таким email уже существует');
+  } else if (err.statusCode === 404) {
+    error = new NotFoundError('Объект не найден');
+  } else if (err.statusCode === 403) {
+    error = new NotEnoughRights('Недостаточно прав для удаления');
   }
   // if (err.name === 'ValidationError' || err.name === 'CastError') {
   //   throw new IncorrectDataError('Переданы некорректные данные');

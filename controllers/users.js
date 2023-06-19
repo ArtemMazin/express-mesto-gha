@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
-import handleErrors from '../errors/handleErrors';
+import NotFoundError from '../errors/NotFoundError';
 
 const register = (req, res, next) => {
   const {
@@ -18,9 +18,7 @@ const register = (req, res, next) => {
       password: hash,
     }).then((user) => res.status(201)
       .send({ data: user.toJSON() })
-      .catch((err) => handleErrors(err, res))
       .catch(next)))
-    .catch((err) => handleErrors(err, res))
     .catch(next);
 };
 
@@ -41,7 +39,6 @@ const login = (req, res, next) => {
         })
         .send({ data: user.toJSON() });
     })
-    // .catch((err) => handleErrors(err, res))
     .catch(next);
 };
 
@@ -49,24 +46,21 @@ const getProfile = (req, res, next) => {
   const owner = req.user._id;
 
   User.findById(owner)
-    .orFail(() => new Error('NotFound'))
+    .orFail(() => new NotFoundError())
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res))
     .catch(next);
 };
 
 const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res))
     .catch(next);
 };
 
 const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
-    .orFail(() => new Error('NotFound'))
+    .orFail(() => new NotFoundError())
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res))
     .catch(next);
 };
 
@@ -83,7 +77,6 @@ const updateProfile = (req, res, next) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res))
     .catch(next);
 };
 
@@ -100,7 +93,6 @@ const updateAvatar = (req, res, next) => {
     },
   )
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res))
     .catch(next);
 };
 
