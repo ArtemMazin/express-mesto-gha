@@ -18,11 +18,13 @@ const getCards = (req, res, next) => {
 };
 
 const deleteCardById = (req, res, next) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .orFail(() => new NotFoundError())
     .then((card) => {
       if (card.owner.toString() === req.user._id) {
-        res.send({ data: card });
+        Card.deleteOne(card)
+          .then(() => res.send({ data: card }))
+          .catch(next);
       } else {
         throw new NotEnoughRights();
       }
