@@ -6,8 +6,8 @@ import { errors } from 'celebrate';
 import helmet from 'helmet';
 import router from './routes/index';
 import handleErrors from './errors/handleErrors';
+import { PORT, DB_CONN } from './dotenv';
 
-const { PORT = 3000 } = process.env;
 const app = express();
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+mongoose.connect(DB_CONN);
 
 app.use(router);
 
