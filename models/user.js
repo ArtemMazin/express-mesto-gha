@@ -8,10 +8,14 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     default: 'Жак-Ив Кусто',
+    minlength: 2,
+    maxlength: 30,
   },
   about: {
     type: String,
     default: 'Исследователь',
+    minlength: 2,
+    maxlength: 30,
   },
   avatar: {
     type: String,
@@ -24,6 +28,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
+    required: true,
     validate: {
       validator: (v) => isEmail(v),
       message: 'Неправильный формат почты',
@@ -31,10 +36,12 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
+    required: true,
     select: false,
   },
 });
 
+// метод, возвращающий user без пароля
 userSchema.methods.toJSON = function () {
   const user = this.toObject();
   delete user.password;

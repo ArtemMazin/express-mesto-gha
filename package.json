@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "backend of the mesto project",
   "type": "module",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "lint": "npx eslint .",
     "start": "node --experimental-specifier-resolution=node app.js",
