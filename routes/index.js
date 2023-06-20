@@ -1,30 +1,16 @@
 import { Router } from 'express';
-import { celebrate, Joi } from 'celebrate';
 import checkAuth from '../middlewares/auth';
 import userRoutes from './users';
 import cardRoutes from './cards';
 import { register, login } from '../controllers/users';
-import { regExpEmail, regExpUrl } from '../utils/utils';
 import NotFoundError from '../errors/NotFoundError';
+import { loginValidation, registerValidation } from '../utils/validationConfig';
 
 const router = Router();
 
-router.post('/signin', celebrate({
-  body: Joi.object().keys({
-    email: Joi.string().required().pattern(regExpEmail),
-    password: Joi.string().required(),
-  }),
-}), login);
+router.post('/signin', loginValidation, login);
 
-router.post('/signup', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    email: Joi.string().required().pattern(regExpEmail),
-    password: Joi.string().required(),
-    avatar: Joi.string().pattern(regExpUrl),
-  }).unknown(true),
-}), register);
+router.post('/signup', registerValidation, register);
 
 router.use(checkAuth);
 
