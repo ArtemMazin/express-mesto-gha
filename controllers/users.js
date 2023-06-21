@@ -1,9 +1,10 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user';
-import NotFoundError from '../errors/NotFoundError';
 import EmailIsExist from '../errors/EmailIsExist';
 import { SECRET_KEY } from '../dotenv';
+import searchDB from '../decorators/searchDB';
+import searchAndUpdateDB from '../decorators/searchAndUpdateDB';
 
 const register = (req, res, next) => {
   const {
@@ -47,15 +48,6 @@ const login = (req, res, next) => {
     .catch(next);
 };
 
-const getProfile = (req, res, next) => {
-  const owner = req.user._id;
-
-  User.findById(owner)
-    .orFail(() => new NotFoundError('Пользователь не найден'))
-    .then((user) => res.send({ data: user }))
-    .catch(next);
-};
-
 const getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send({ data: user }))
@@ -63,42 +55,27 @@ const getUsers = (req, res, next) => {
 };
 
 const getUserById = (req, res, next) => {
-  User.findById(req.params.userId)
-    .orFail(() => new NotFoundError('Пользователь не найден'))
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+  const get = searchDB(req, res, next);
+  get(req.params.userId);
+};
+
+const getProfile = (req, res, next) => {
+  const get = searchDB(req, res, next);
+  get(req.user._id);
 };
 
 const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
-  const owner = req.user._id;
 
-  User.findByIdAndUpdate(
-    owner,
-    { name, about },
-    {
-      new: true, // обработчик then получит на вход обновлённую запись
-      runValidators: true, // данные будут валидированы перед изменением
-    },
-  )
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+  const update = searchAndUpdateDB(req, res, next);
+  update({ name, about });
 };
 
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
-  const owner = req.user._id;
 
-  User.findByIdAndUpdate(
-    owner,
-    { avatar },
-    {
-      new: true, // обработчик then получит на вход обновлённую запись
-      runValidators: true, // данные будут валидированы перед изменением
-    },
-  )
-    .then((user) => res.send({ data: user }))
-    .catch(next);
+  const update = searchAndUpdateDB(req, res, next);
+  update({ avatar });
 };
 
 export {
