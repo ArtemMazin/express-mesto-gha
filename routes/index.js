@@ -14,8 +14,9 @@ router.post('/signup', registerValidation, register);
 
 router.use(checkAuth);
 
-router.use(userRoutes);
-router.use(cardRoutes);
+router.use('/users', userRoutes);
+
+router.use('/cards', cardRoutes);
 
 router.use('*', (req, res, next) => next(new NotFoundError('Указан некорректный маршрут')));
 

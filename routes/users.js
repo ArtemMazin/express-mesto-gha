@@ -8,14 +8,14 @@ import {
 
 const router = Router();
 
-router.get('/users', getUsers);
+router.get('/', getUsers);
 
-router.get('/users/me', getProfile);
+router.get('/me', getProfile);
 
-router.get('/users/:userId', getUserByIdValidation, getUserById);
+router.get('/:userId', getUserByIdValidation, getUserById);
 
-router.patch('/users/me', updateProfileValidation, updateProfile);
+router.patch('/me', updateProfileValidation, updateProfile);
 
-router.patch('/users/me/avatar', updateAvatarValidation, updateAvatar);
+router.patch('/me/avatar', updateAvatarValidation, updateAvatar);
 
 export default router;

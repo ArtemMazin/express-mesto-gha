@@ -8,14 +8,14 @@ import {
 
 const router = Router();
 
-router.post('/cards', createCardValidation, createCard);
+router.post('/', createCardValidation, createCard);
 
-router.get('/cards', getCards);
+router.get('/', getCards);
 
-router.delete('/cards/:cardId', deleteCardByIdValidation, deleteCardById);
+router.delete('/:cardId', deleteCardByIdValidation, deleteCardById);
 
-router.put('/cards/:cardId/likes', likeCardValidation, likeCard);
+router.put('/:cardId/likes', likeCardValidation, likeCard);
 
-router.delete('/cards/:cardId/likes', dislikeCardValidation, dislikeCard);
+router.delete('/:cardId/likes', dislikeCardValidation, dislikeCard);
 
 export default router;

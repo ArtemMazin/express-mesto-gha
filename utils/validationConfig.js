@@ -37,7 +37,7 @@ export const registerValidation = celebrate({
     email: Joi.string().required().pattern(regExpEmail),
     password: Joi.string().required(),
     avatar: Joi.string().pattern(regExpUrl),
-  }).unknown(true),
+  }),
 });
 
 export const createCardValidation = celebrate({
