@@ -1,6 +1,7 @@
 import Card from '../models/card';
 import NotFoundError from '../errors/NotFoundError';
 import NotEnoughRights from '../errors/NotEnoughRights';
+import searchAndUpdateCardDB from '../decorators/searchAndUpdateCardDB';
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;
@@ -35,19 +36,15 @@ const deleteCardById = (req, res, next) => {
 const likeCard = (req, res, next) => {
   const owner = req.user._id;
 
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: owner } }, { new: true })
-    .orFail(() => new NotFoundError('Карточка не найдена'))
-    .then((card) => res.send({ data: card }))
-    .catch(next);
+  const update = searchAndUpdateCardDB(req, res, next);
+  update({ $addToSet: { likes: owner } });
 };
 
 const dislikeCard = (req, res, next) => {
   const owner = req.user._id;
 
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: owner } }, { new: true })
-    .orFail(() => new NotFoundError('Карточка не найдена'))
-    .then((card) => res.send({ data: card }))
-    .catch(next);
+  const update = searchAndUpdateCardDB(req, res, next);
+  update({ $pull: { likes: owner } });
 };
 
 export {

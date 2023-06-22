@@ -6,7 +6,7 @@ export const regExpUrl = /https?:\/\/(www\.)?[-\w@:%\.\+~#=]{1,256}\.[a-z0-9()]{
 
 export const getUserByIdValidation = celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().hex().length(24).required(),
+    userId: Joi.string().required().hex().length(24),
   }),
 });
 
@@ -49,18 +49,18 @@ export const createCardValidation = celebrate({
 
 export const deleteCardByIdValidation = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24),
+    cardId: Joi.string().required().hex().length(24),
   }),
 });
 
 export const likeCardValidation = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24),
+    cardId: Joi.string().required().hex().length(24),
   }),
 });
 
 export const dislikeCardValidation = celebrate({
   params: Joi.object().keys({
-    cardId: Joi.string().hex().length(24),
+    cardId: Joi.string().required().hex().length(24),
   }),
 });

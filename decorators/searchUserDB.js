@@ -1,7 +1,7 @@
 import User from '../models/user';
 import NotFoundError from '../errors/NotFoundError';
 
-export default function searchDB(req, res, next) {
+export default function searchUserDB(req, res, next) {
   return function (id) {
     User.findById(id)
       .orFail(() => new NotFoundError('Пользователь не найден'))

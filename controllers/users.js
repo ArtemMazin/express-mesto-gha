@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import EmailIsExist from '../errors/EmailIsExist';
 import { SECRET_KEY } from '../dotenv';
-import searchDB from '../decorators/searchDB';
-import searchAndUpdateDB from '../decorators/searchAndUpdateDB';
+import searchUserDB from '../decorators/searchUserDB';
+import searchAndUpdateUserDB from '../decorators/searchAndUpdateUserDB';
 
 const register = (req, res, next) => {
   const {
@@ -55,26 +55,26 @@ const getUsers = (req, res, next) => {
 };
 
 const getUserById = (req, res, next) => {
-  const get = searchDB(req, res, next);
+  const get = searchUserDB(req, res, next);
   get(req.params.userId);
 };
 
 const getProfile = (req, res, next) => {
-  const get = searchDB(req, res, next);
+  const get = searchUserDB(req, res, next);
   get(req.user._id);
 };
 
 const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
-  const update = searchAndUpdateDB(req, res, next);
+  const update = searchAndUpdateUserDB(req, res, next);
   update({ name, about });
 };
 
 const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
 
-  const update = searchAndUpdateDB(req, res, next);
+  const update = searchAndUpdateUserDB(req, res, next);
   update({ avatar });
 };
 
