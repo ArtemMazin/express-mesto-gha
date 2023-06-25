@@ -10,9 +10,11 @@ const checkAuth = (req, res, next) => {
       req.user = payload;
     } catch (error) {
       next(new UnauthorizedError('Необходима авторизация'));
+      return;
     }
   } else {
     next(new UnauthorizedError('Необходима авторизация'));
+    return;
   }
 
   next();
