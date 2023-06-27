@@ -4,9 +4,9 @@ import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import { errors } from 'celebrate';
 import helmet from 'helmet';
-import router from './routes/index';
-import handleErrors from './errors/handleErrors';
-import { PORT, DB_CONN } from './dotenv';
+import router from './routes/index.js';
+import handleErrors from './errors/handleErrors.js';
+import { PORT, DB_CONN } from './dotenv.js';
 
 const app = express();
 const limiter = rateLimit({

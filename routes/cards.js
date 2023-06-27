@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import {
   createCard, getCards, deleteCardById, likeCard, dislikeCard,
-} from '../controllers/cards';
+} from '../controllers/cards.js';
 import {
   createCardValidation, deleteCardByIdValidation, dislikeCardValidation, likeCardValidation,
-} from '../utils/validationConfig';
+} from '../utils/validationConfig.js';
 
 const router = Router();
 

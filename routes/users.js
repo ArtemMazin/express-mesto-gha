@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import {
   getUserByIdValidation, updateAvatarValidation, updateProfileValidation,
-} from '../utils/validationConfig';
+} from '../utils/validationConfig.js';
 import {
   getUsers, getUserById, updateProfile, updateAvatar, getProfile,
-} from '../controllers/users';
+} from '../controllers/users.js';
 
 const router = Router();
 

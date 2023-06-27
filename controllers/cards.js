@@ -1,7 +1,7 @@
-import Card from '../models/card';
-import NotFoundError from '../errors/NotFoundError';
-import NotEnoughRights from '../errors/NotEnoughRights';
-import searchAndUpdateCardDB from '../decorators/searchAndUpdateCardDB';
+import Card from '../models/card.js';
+import NotFoundError from '../errors/NotFoundError.js';
+import NotEnoughRights from '../errors/NotEnoughRights.js';
+import searchAndUpdateCardDB from '../decorators/searchAndUpdateCardDB.js';
 
 const createCard = (req, res, next) => {
   const { name, link } = req.body;

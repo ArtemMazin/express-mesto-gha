@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/user';
-import EmailIsExist from '../errors/EmailIsExist';
-import { SECRET_KEY } from '../dotenv';
-import searchUserDB from '../decorators/searchUserDB';
-import searchAndUpdateUserDB from '../decorators/searchAndUpdateUserDB';
+import User from '../models/user.js';
+import EmailIsExist from '../errors/EmailIsExist.js';
+import { SECRET_KEY } from '../dotenv.js';
+import searchUserDB from '../decorators/searchUserDB.js';
+import searchAndUpdateUserDB from '../decorators/searchAndUpdateUserDB.js';
 
 const register = (req, res, next) => {
   const {

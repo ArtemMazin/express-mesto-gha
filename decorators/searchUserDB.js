@@ -1,5 +1,5 @@
-import User from '../models/user';
-import NotFoundError from '../errors/NotFoundError';
+import User from '../models/user.js';
+import NotFoundError from '../errors/NotFoundError.js';
 
 export default function searchUserDB(req, res, next) {
   return function (id) {

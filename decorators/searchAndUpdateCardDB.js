@@ -1,5 +1,5 @@
-import Card from '../models/card';
-import NotFoundError from '../errors/NotFoundError';
+import Card from '../models/card.js';
+import NotFoundError from '../errors/NotFoundError.js';
 
 export default function searchAndUpdateCardDB(req, res, next) {
   return function (newData) {

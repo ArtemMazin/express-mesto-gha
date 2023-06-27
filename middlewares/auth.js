@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import UnauthorizedError from '../errors/UnauthorizedError';
-import { SECRET_KEY } from '../dotenv';
+import UnauthorizedError from '../errors/UnauthorizedError.js';
+import { SECRET_KEY } from '../dotenv.js';
 
 const checkAuth = (req, res, next) => {
   if (req.cookies.jwt) {

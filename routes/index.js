@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import checkAuth from '../middlewares/auth';
-import userRoutes from './users';
-import cardRoutes from './cards';
-import { register, login } from '../controllers/users';
-import NotFoundError from '../errors/NotFoundError';
-import { loginValidation, registerValidation } from '../utils/validationConfig';
+import checkAuth from '../middlewares/auth.js';
+import userRoutes from './users.js';
+import cardRoutes from './cards.js';
+import { register, login } from '../controllers/users.js';
+import NotFoundError from '../errors/NotFoundError.js';
+import { loginValidation, registerValidation } from '../utils/validationConfig.js';
 
 const router = Router();
 
